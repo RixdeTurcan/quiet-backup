@@ -71,7 +71,14 @@ def scanGroup(group: Dict[str, Any], state: Dict[str, Any], scanPauseDuration: f
 
 	return filesToBackup.keys()
 
-
+def mkdir775(path: Path):
+	path.mkdir(parents=True, exist_ok=True)
+	for p in [path, *path.parents]:
+		if p.exists():
+			try:
+				p.chmod(0o775)
+			except PermissionError:
+				pass
 
 def saveFile(dest: Dict[str, Any], policy: Dict[str, Any], fileState: Dict[str, Any], filePath: str, destBasePath: Path, timestamp: str) -> None:
 	relPath = Path(fileState['relPath'])
@@ -101,7 +108,7 @@ def saveFile(dest: Dict[str, Any], policy: Dict[str, Any], fileState: Dict[str, 
 
 	logging.debug('Creating %s backup: %s > %s', dest['type'], filePath, destFullPath)
 	if dest['type'] == 'local':
-		destFullPath.parent.mkdir(parents=True, exist_ok=True)
+		mkdir775(destFullPath.parent)
 
 		if compress:
 			with open(filePath, 'rb') as fIn:
@@ -110,6 +117,8 @@ def saveFile(dest: Dict[str, Any], policy: Dict[str, Any], fileState: Dict[str, 
 
 		else:
 			shutil.copy2(filePath, destFullPath)
+
+		destFullPath.chmod(0o775)
 
 		if policy['max_backups_per_file'] > 1:
 			backupFiles = sorted(glob.glob(str(destFullSearchPath), include_hidden=True))

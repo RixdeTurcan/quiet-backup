@@ -79,7 +79,7 @@ This runs `dpkg-buildpackage` and moves the generated package files to `build`.
 
 ```bash
 cd ../build
-sudo apt install ./quiet-backup_0.1.0-1_all.deb
+sudo apt install ./quiet-backup_*.deb
 ```
 
 ## Service setup
