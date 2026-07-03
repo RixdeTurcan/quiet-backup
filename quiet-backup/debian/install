@@ -1,0 +1,5 @@
+src/main.py					/usr/share/quiet-backup/
+src/backup.py				/usr/share/quiet-backup/
+src/config.py				/usr/share/quiet-backup/
+etc/config.json				/etc/quiet-backup/
+bin/quiet-backup			/usr/bin/

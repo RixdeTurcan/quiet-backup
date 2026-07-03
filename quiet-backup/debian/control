@@ -1,0 +1,18 @@
+Source: quiet-backup
+Section: utils
+Priority: optional
+Maintainer: Jory Lafaye <jory.lafaye@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+
+Package: quiet-backup
+Architecture: all
+Depends:
+ adduser,
+ ${misc:Depends},
+ ${python3:Depends},
+ python3 (>= 3.11)
+Description: A periodic low-impact backup daemon
+ A small daemon that periodicaly scans configured paths and writes
+ backup copies at a limited rate to reduce system impact.

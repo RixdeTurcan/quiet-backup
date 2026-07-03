@@ -1,0 +1,22 @@
+[Unit]
+Description=Periodic low-impact backup service
+After=network.target
+
+[Service]
+Type=simple
+User=quiet-backup
+Group=quiet-backup
+StateDirectory=quiet-backup
+WorkingDirectory=/var/lib/quiet-backup
+ExecStart=/usr/bin/quiet-backup --config /etc/quiet-backup/config.json
+Restart=always
+RestartSec=60
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

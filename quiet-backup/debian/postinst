@@ -1,0 +1,47 @@
+#!/bin/sh
+set -e
+
+USER=quiet-backup
+GROUP=quiet-backup
+STATEDIR=/var/lib/quiet-backup
+STATEFILE=$STATEDIR/state.json
+BACKUPDIR=$STATEDIR/backups
+
+case "$1" in
+    configure)
+        if ! getent group "$GROUP" >/dev/null; then
+            addgroup --system "$GROUP"
+        fi
+
+        if ! getent passwd "$USER" >/dev/null; then
+            adduser \
+                --system \
+                --ingroup "$GROUP" \
+                --home "$STATEDIR" \
+                --disabled-login \
+                --disabled-password \
+                --shell /usr/sbin/nologin \
+                "$USER"
+        fi
+
+        mkdir -p "$BACKUPDIR"
+
+        if [ ! -e "$STATEFILE" ]; then
+            printf '{}\n' > "$STATEFILE"
+        fi
+
+        chown -R "$USER:$GROUP" "$STATEDIR"
+        chmod 0755 "$STATEDIR" "$BACKUPDIR"
+        chmod 0644 "$STATEFILE"
+        ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+    *)
+        echo "postinst called with unknown argument '$1'" >&2
+        exit 1
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

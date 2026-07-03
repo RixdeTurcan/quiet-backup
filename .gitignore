@@ -1,0 +1,9 @@
+.idea
+
+venv/**
+var/**
+
+build/**
+!build/*.deb
+
+quiet-backup/etc/config.json
