@@ -32,6 +32,9 @@ def scanGroup(group: Dict[str, Any], state: Dict[str, Any], scanPauseDuration: f
 	for pathCfg in group['paths']:
 		logging.info("Scanning pattern: %s : %s > %s", pathCfg['base'], pathCfg['search'], pathCfg['dest'])
 		basePath = Path(pathCfg['base'])
+
+		count = 0
+
 		for p in glob.iglob(pathCfg['search'].lstrip("/"), root_dir=basePath, recursive=True, include_hidden=True):
 			fullPath = basePath.joinpath(p)
 
@@ -65,9 +68,11 @@ def scanGroup(group: Dict[str, Any], state: Dict[str, Any], scanPauseDuration: f
 				pathState['relPath'] = p
 				pathState['dest'] = pathCfg['dest']
 				filesToBackup[fullPathStr] = True
-
+				count += 1
 
 			time.sleep(scanPauseDuration)
+
+		logging.info('Found %i updated files', count)
 
 	return filesToBackup.keys()
 
@@ -152,6 +157,9 @@ def backupGroup(group: Dict[str, Any], files: List[str], copyDuration: float, st
 	policy = group['backup_policy']
 	timestamp = datetime.now(tz=timezone.utc).strftime("%Y_%m_%d_T_%H_%M_%S_Z")
 
+	logging.info('Backing up %i files', len(files))
+
+
 	for filePath in files:
 		t0 = time.time()
 
@@ -215,6 +223,7 @@ def runOnce(config: Dict[str, Any]) -> None:
 			'group': group,
 			'files': files
 		}
+		l = len(files)
 		count += len(files)
 
 	copyDuration = min(spreadDuration/max(count, 1), targetCopyDuration)
