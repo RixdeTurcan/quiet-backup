@@ -1,3 +1,7 @@
+quiet-backup (0.1.2-3) unstable; urgency=medium
+  * Do not restart the whole backup if one file have incorrect permissions
+ -- Jory Lafaye <jory.lafaye@gmail.com>  Fri, 03 Jul 2026 19:30:00 +0200
+
 quiet-backup (0.1.1-2) unstable; urgency=medium
   * Fix incorrect backup file permissions
  -- Jory Lafaye <jory.lafaye@gmail.com>  Fri, 03 Jul 2026 16:58:00 +0200

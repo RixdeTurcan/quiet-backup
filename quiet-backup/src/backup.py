@@ -108,17 +108,29 @@ def saveFile(dest: Dict[str, Any], policy: Dict[str, Any], fileState: Dict[str, 
 
 	logging.debug('Creating %s backup: %s > %s', dest['type'], filePath, destFullPath)
 	if dest['type'] == 'local':
-		mkdir775(destFullPath.parent)
+		try:
+			mkdir775(destFullPath.parent)
+		except PermissionError as e:
+			logging.error('Incorrect permissions to create parent directory of: {}'.format(destFullPath))
+			logging.error(e)
+			return False
 
-		if compress:
-			with open(filePath, 'rb') as fIn:
-				with gzip.open(destFullPath, 'wb', policy['compression_level']) as fOut:
-					shutil.copyfileobj(fIn, fOut)
+		try:
+			if compress:
+				with open(filePath, 'rb') as fIn:
+					with gzip.open(destFullPath, 'wb', policy['compression_level']) as fOut:
+						shutil.copyfileobj(fIn, fOut)
 
-		else:
-			shutil.copy2(filePath, destFullPath)
+			else:
+				shutil.copy2(filePath, destFullPath)
 
-		destFullPath.chmod(0o775)
+			destFullPath.chmod(0o775)
+
+		except PermissionError as e:
+			logging.error('Incorrect permissions to backup file: {}'.format(destFullPath))
+			logging.error(e)
+			return False
+
 
 		if policy['max_backups_per_file'] > 1:
 			backupFiles = sorted(glob.glob(str(destFullSearchPath), include_hidden=True))
@@ -131,6 +143,7 @@ def saveFile(dest: Dict[str, Any], policy: Dict[str, Any], fileState: Dict[str, 
 					logging.debug('Deleting old backup: %s', file)
 					Path(file).unlink(missing_ok=True)
 
+	return True
 
 
 
@@ -142,6 +155,7 @@ def backupGroup(group: Dict[str, Any], files: List[str], copyDuration: float, st
 	for filePath in files:
 		t0 = time.time()
 
+		saved = True
 		for dest in group['destinations']:
 			destBasePath = Path(dest['path'])
 
@@ -150,7 +164,12 @@ def backupGroup(group: Dict[str, Any], files: List[str], copyDuration: float, st
 				continue
 
 			fileState = state[groupName][filePath]
-			saveFile(dest, policy, fileState, filePath, destBasePath, timestamp)
+			if not saveFile(dest, policy, fileState, filePath, destBasePath, timestamp):
+				saved = False
+				break
+
+		if not saved:
+			continue
 
 		stateToUpdate[groupName][filePath] = state[groupName][filePath]
 		tmpPath = statePath.parent.joinpath('state.json.tmp')
