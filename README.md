@@ -88,6 +88,7 @@ The package creates:
 
 - a system user: `quiet-backup`
 - a system group: `quiet-backup`
+- a configuration file: `/etc/quiet-backup/config.json`
 - a state directory: `/var/lib/quiet-backup`
 - a backup directory: `/var/lib/quiet-backup/backups`
 - a state file: `/var/lib/quiet-backup/state.json`
