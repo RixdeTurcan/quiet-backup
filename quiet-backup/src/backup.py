@@ -1,6 +1,5 @@
 from typing import Any, Dict, List
 from pathlib import Path
-import glob
 import logging
 import json
 import time
@@ -9,6 +8,7 @@ import gzip
 from datetime import datetime, timezone
 import shutil
 import os
+from wcmatch import glob
 
 
 
@@ -30,12 +30,20 @@ def scanGroup(group: Dict[str, Any], state: Dict[str, Any], scanPauseDuration: f
 	t = time.time()
 
 	for pathCfg in group['paths']:
+		ignoreList = pathCfg['ignore']+group['global_ignore']
 		logging.info("Scanning pattern: %s : %s > %s", pathCfg['base'], pathCfg['search'], pathCfg['dest'])
+		logging.debug("Ignore list: %s", ignoreList)
 		basePath = Path(pathCfg['base'])
 
 		count = 0
 
-		for p in glob.iglob(pathCfg['search'].lstrip("/"), root_dir=basePath, recursive=True, include_hidden=True):
+		for p in glob.iglob(
+			pathCfg['search'].lstrip("/"),
+			root_dir=basePath,
+			flags=glob.GLOBSTAR | glob.DOTGLOB,
+			limit=0,
+			exclude=ignoreList
+		):
 			fullPath = basePath.joinpath(p)
 
 			if fullPath.is_dir():

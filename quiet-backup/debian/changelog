@@ -1,3 +1,7 @@
+quiet-backup (0.2.0-1) unstable; urgency=medium
+  * Add global_ignore and ignore parameters to exclude files by pattern
+ -- Jory Lafaye <jory.lafaye@gmail.com>  Fri, 05 Jul 2026 20:24:00 +0200
+
 quiet-backup (0.1.3-1) unstable; urgency=medium
   * Add more INFO logs
  -- Jory Lafaye <jory.lafaye@gmail.com>  Fri, 03 Jul 2026 19:30:00 +0200

@@ -12,7 +12,8 @@ Depends:
  adduser,
  ${misc:Depends},
  ${python3:Depends},
- python3 (>= 3.11)
+ python3 (>= 3.11),
+ python3-wcmatch
 Description: A periodic low-impact backup daemon
  A small daemon that periodicaly scans configured paths and writes
  backup copies at a limited rate to reduce system impact.

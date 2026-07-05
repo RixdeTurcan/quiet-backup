@@ -131,11 +131,13 @@ Example:
       "name": "example-documents",
       "paths": [
         {
-          "base": "/home/user/Documents",
+          "base": "/home/user/Documents", 
           "search": "*.pdf",
+		  "ignore": ["**/venv/**"],
           "dest": "Documents"
         }
       ],
+      "global_ignore": ["**/.directory"],
       "backup_policy": {
         "min_delay_before_backup": 2,
         "max_backups_per_file": 5,
@@ -181,6 +183,9 @@ Upper limit for backup throughput. This prevents large bursts of copy activity.
 #### `initial_delay_minutes`
 Delay before the first backup cycle after service start.
 
+#### `global_ignore`
+A glob pattern to exclude files used for all pattern groups
+
 ### Pattern groups
 
 Each item in `patterns` defines one backup group.
@@ -195,6 +200,7 @@ Each rule contains:
 
 - `base`: base directory to scan
 - `search`: glob pattern to match files
+- `ignore`: glob pattern to exclude files
 - `dest`: destination subdirectory name
 
 #### `backup_policy`
@@ -350,7 +356,6 @@ Possible next steps for the project:
 - support remote destinations
 - add restore helper commands
 - add config validation
-- support exclusion rules
 - improve retention policies
 - add hashing for stronger change detection
 

@@ -1,0 +1,39 @@
+{
+	"state_file": "/var/lib/quiet-backup/state.json",
+	"scan_pause_ms": 100,
+	"min_interval_hours": 12,
+	"spread_hours": 6,
+	"max_files_per_minute": 1,
+	"initial_delay_minutes": 10,
+	"patterns": [
+		{
+			"name": "example-documents",
+			"paths": [
+				{
+					"base": "/home/user/Documents",
+					"search": "*.pdf",
+					"ignore": [
+						"**/venv/**"
+					],
+					"dest": "Documents"
+				}
+			],
+			"global_ignore": [
+				"**/.directory"
+			],
+			"backup_policy": {
+				"min_delay_before_backup": 2,
+				"max_backups_per_file": 5,
+				"compress": true,
+				"compression_level": 6,
+				"compress_ignore_filetype": ["zip", "gz", "tar", "jar", "bz2", "jpg", "jpeg", "png", "gif", "mp3", "mp4", "ogg", "avi", "mkv", "aac", "m4a", "flac"]
+			},
+			"destinations": [
+				{
+					"type": "local",
+					"path": "/var/lib/quiet-backup/backups"
+				}
+			]
+		}
+	]
+}
